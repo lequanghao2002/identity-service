@@ -1,7 +1,7 @@
 package com.example.identity_service.mapper;
 
-import com.example.identity_service.dto.UserCreationRequest;
-import com.example.identity_service.dto.UserUpdateRequest;
+import com.example.identity_service.dto.request.UserCreationRequest;
+import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.dto.response.UserResponse;
 import com.example.identity_service.entity.User;
 import org.mapstruct.Mapper;
@@ -16,5 +16,5 @@ public interface UserMapper {
 
     List<UserResponse> toUsersResponse(List<User> users);
 
-    void updateUser(@MappingTarget User user, UserUpdateRequest request);
+    void updateUser(@MappingTarget User user, com.example.identity_service.dto.request.UserUpdateRequest request);
 }
