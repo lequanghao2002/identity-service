@@ -1,13 +1,13 @@
 package com.example.identity_service.service;
 
 import com.example.identity_service.dto.request.UserCreationRequest;
-import com.example.identity_service.dto.request.UserUpdateRequest;
 import com.example.identity_service.dto.response.UserResponse;
 import com.example.identity_service.entity.User;
 import com.example.identity_service.enums.Role;
 import com.example.identity_service.exception.AppException;
 import com.example.identity_service.exception.ErrorCode;
 import com.example.identity_service.mapper.UserMapper;
+import com.example.identity_service.repository.RoleRepository;
 import com.example.identity_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
@@ -39,9 +41,9 @@ public class UserService {
         User user = userMapper.toUser((request));
         user.setPassword(passwordEncoder.encode((request.getPassword())));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        var roles = roleRepository.findAllById(new List<String>("1"));
+//        roles.add(Role.USER.name());
+//        user.setRoles(roles);
 
         return userRepository.save(user);
     }
@@ -67,12 +69,16 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException(("User not found")));
     }
 
-    public User updateUser(com.example.identity_service.dto.request.UserUpdateRequest request, String userId) {
+    public UserResponse updateUser(com.example.identity_service.dto.request.UserUpdateRequest request, String userId) {
         User user = getUserById(userId);
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return userRepository.save(user);
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public void deleteUser(String userId) {

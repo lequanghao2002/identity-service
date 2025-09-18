@@ -16,7 +16,9 @@ public interface UserMapper {
 
     List<UserResponse> toUsersResponse(List<User> users);
 
+    @Mapping(target = "roles", ignore = true)
     UserResponse toUserResponse(User user);
 
-    void updateUser(@MappingTarget User user, com.example.identity_service.dto.request.UserUpdateRequest request);
+    @Mapping(target = "roles", ignore = true)
+    void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }

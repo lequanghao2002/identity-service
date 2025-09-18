@@ -1,7 +1,7 @@
 package com.example.identity_service.configuration;
 
+import com.example.identity_service.entity.Role;
 import com.example.identity_service.entity.User;
-import com.example.identity_service.enums.Role;
 import com.example.identity_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +25,19 @@ public class ApplicationInitConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                var roles = new HashSet<String>();
-                roles.add(Role.ADMIN.name());
-
-                User user = User.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("123"))
-                        .roles(roles)
-                        .build();
-
-                userRepository.save(user);
-                log.warn("Admin user has been created");
-            }
+//            if (userRepository.findByUsername("admin").isEmpty()) {
+//                var roles = new HashSet<com.example.identity_service.entity.Role>();
+//                roles.add(new Role().builder().name("ADMIN")..build());
+//
+//                User user = User.builder()
+//                        .username("admin")
+//                        .password(passwordEncoder.encode("123"))
+//                        .roles(roles)
+//                        .build();
+//
+//                userRepository.save(user);
+//                log.warn("Admin user has been created");
+//            }
             ;
         };
     }
