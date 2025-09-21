@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 
 public class Permission {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    int id;
     String name;
 }

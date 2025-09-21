@@ -2,8 +2,8 @@ package com.example.identity_service.service;
 
 import com.example.identity_service.dto.request.UserCreationRequest;
 import com.example.identity_service.dto.response.UserResponse;
+import com.example.identity_service.entity.Role;
 import com.example.identity_service.entity.User;
-import com.example.identity_service.enums.Role;
 import com.example.identity_service.exception.AppException;
 import com.example.identity_service.exception.ErrorCode;
 import com.example.identity_service.mapper.UserMapper;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -41,9 +40,9 @@ public class UserService {
         User user = userMapper.toUser((request));
         user.setPassword(passwordEncoder.encode((request.getPassword())));
 
-//        var roles = roleRepository.findAllById(new List<String>("1"));
-//        roles.add(Role.USER.name());
-//        user.setRoles(roles);
+        Role role = roleRepository.findById("2")
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        user.setRoles(Set.of(role));
 
         return userRepository.save(user);
     }

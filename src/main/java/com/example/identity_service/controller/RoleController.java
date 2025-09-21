@@ -1,8 +1,7 @@
 package com.example.identity_service.controller;
 
-import com.example.identity_service.dto.request.ApiResponse;
+import com.example.identity_service.dto.response.ApiResponse;
 import com.example.identity_service.dto.request.RoleRequest;
-import com.example.identity_service.dto.response.PermissionResponse;
 import com.example.identity_service.dto.response.RoleResponse;
 import com.example.identity_service.service.RoleService;
 import lombok.AccessLevel;

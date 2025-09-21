@@ -16,8 +16,8 @@ import java.util.Set;
 
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    int id;
     String name;
 
     @ManyToMany
