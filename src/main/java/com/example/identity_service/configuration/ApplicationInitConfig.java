@@ -1,25 +1,26 @@
 package com.example.identity_service.configuration;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.example.identity_service.entity.Permission;
 import com.example.identity_service.entity.Role;
 import com.example.identity_service.entity.User;
 import com.example.identity_service.repository.PermissionRepository;
 import com.example.identity_service.repository.RoleRepository;
 import com.example.identity_service.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,8 +30,8 @@ public class ApplicationInitConfig {
     PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository,
-                                        RoleRepository roleRepository, PermissionRepository permissionRepository) {
+    ApplicationRunner applicationRunner(
+            UserRepository userRepository, RoleRepository roleRepository, PermissionRepository permissionRepository) {
         return args -> {
             // === 1. Khởi tạo Permission ===
             List<String> permissionNames = List.of("CREATOR", "APPROVER", "VIEWER");
@@ -43,7 +44,8 @@ public class ApplicationInitConfig {
             }
 
             List<Permission> allPermissions = permissionRepository.findAll();
-            Permission viewerPermission = permissionRepository.findByName("VIEWER")
+            Permission viewerPermission = permissionRepository
+                    .findByName("VIEWER")
                     .orElseThrow(() -> new RuntimeException("VIEWER permission not found"));
 
             // === 2. Khởi tạo Role ===
@@ -64,7 +66,8 @@ public class ApplicationInitConfig {
 
             // === 3. Khởi tạo User admin ===
             if (!userRepository.existsByUsername("admin")) {
-                Role adminRole = roleRepository.findByName("ADMIN")
+                Role adminRole = roleRepository
+                        .findByName("ADMIN")
                         .orElseThrow(() -> new RuntimeException("Role ADMIN not found"));
 
                 User admin = User.builder()
@@ -78,7 +81,8 @@ public class ApplicationInitConfig {
             }
 
             if (!userRepository.existsByUsername("haolq")) {
-                Role userRole = roleRepository.findByName("USER")
+                Role userRole = roleRepository
+                        .findByName("USER")
                         .orElseThrow(() -> new RuntimeException("Role USER not found"));
 
                 User normalUser = User.builder()

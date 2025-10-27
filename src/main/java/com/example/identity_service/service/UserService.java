@@ -1,5 +1,15 @@
 package com.example.identity_service.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.example.identity_service.dto.request.UserCreationRequest;
 import com.example.identity_service.dto.response.UserResponse;
 import com.example.identity_service.entity.Role;
@@ -9,19 +19,11 @@ import com.example.identity_service.exception.ErrorCode;
 import com.example.identity_service.mapper.UserMapper;
 import com.example.identity_service.repository.RoleRepository;
 import com.example.identity_service.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +36,12 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public User createUser(UserCreationRequest request) {
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new AppException(ErrorCode.USER_EXISTED);
+        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 
         User user = userMapper.toUser((request));
         user.setPassword(passwordEncoder.encode((request.getPassword())));
 
-        Role role = roleRepository.findById("2")
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        Role role = roleRepository.findById("2").orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
         user.setRoles(Set.of(role));
 
         return userRepository.save(user);
@@ -61,7 +61,7 @@ public class UserService {
         return userMapper.toUsersResponse(userRepository.findAll());
     }
 
-    //@PostAuthorize("hasRole('ADMIN')") // Kiểm tra sau khi vào method thực hiện
+    // @PostAuthorize("hasRole('ADMIN')") // Kiểm tra sau khi vào method thực hiện
     @PostAuthorize("returnObject.username == authentication.name")
     // Nếu username trả về là username đăng nhập thì mới trả về
     public User getUserById(String id) {
